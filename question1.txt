@@ -1,0 +1,1273 @@
+Pract 1
+Addition
+add.py
+```
+import hashlib
+import time
+class Block:
+    def __init__(self,id,n,n1,t,ph=""):
+        self.id=id
+        self.n=n
+        self.n1=n1
+        self.result=n+n1
+        self.t=t
+        self.ph=ph
+        self.hash=self.calch()
+    def calch(self):
+        data=str(self.id)+str(self.n)+str(self.n1)+str(self.result)+str(self.t)+str(self.ph)
+        return hashlib.sha256(data.encode()).hexdigest()
+class Blockchain:
+    def __init__(self):
+        self.chain=[self.GBlock()]
+    def GBlock(self):
+        return Block(1,0,0,time.time())
+    def getCBlock(self):
+        return self.chain[-1]
+    def addBlock(self,b):
+        b.ph=self.getCBlock().hash
+        b.hash=b.calch()
+        self.chain.append(b)
+```
+test.py
+```
+from add import Block, Blockchain
+import time
+a=Blockchain()
+print("developed by ....")
+a.addBlock(Block(2,23,76,time.time()))
+a.addBlock(Block(3,24,76,time.time()))
+for block in a.chain:
+    print(vars(block))
+```
+Execute:
+python test.py
+Prime no,
+prime.py
+```
+import hashlib
+import time
+class Block:
+    def __init__(self, id, n, t, ph=""):
+        self.id=id
+        self.n=n
+        self.t=t
+        self.ph=ph
+        if self.isprime(n):
+            self.statement= str(n) + "is prime"
+        else:
+            self.statement= str(n) + "isnt prime"
+        self.hash=self.calch()
+    def isprime(self,n):
+        if n<2:
+            return False
+        for i in range(2,n):
+            if n % i ==0:
+                return False
+        return True
+    def calch(self):
+        data= str(self.id)+str(self.n)+str(self.t)+str(self.ph)
+        return hashlib.sha256(data.encode()).hexdigest()
+class Blockchain:
+    def __init__(self):
+        self.chain=[self.GBlock()]
+    def GBlock(self):
+        return Block(1,0,time.time())
+    def CBlock(self):
+        return self.chain[-1]
+    def addBlock(self,b):
+        b.ph=self.CBlock().hash
+        b.hash=b.calch()
+        self.chain.append(b)
+```
+testprime.py
+```
+from prime import Block, Blockchain
+import time
+a=Blockchain()
+print("developed by ....")
+a.addBlock(Block(2,23,time.time()))
+a.addBlock(Block(2,0,time.time()))
+a.addBlock(Block(2,1,time.time()))
+a.addBlock(Block(2,25,time.time()))
+for block in a.chain:
+    print(vars(block))
+```
+Happy,py
+```
+import hashlib
+import time
+class Block:
+    def __init__(self,id,n,t,ph=""):
+        self.id=id
+        self.n=n
+        self.t=t
+        self.ph=ph
+        self.statement=str(n) + "is happy " if self.ishappy(n) else str(n)+"is not happy"
+        self.hash=self.calch()
+    def calch(self):
+        data=str(self.id)+str(self.n)+str(self.t)+str(self.ph)
+        return hashlib.sha256(data.encode()).hexdigest()
+    def ishappy(self,n):
+        if n==0:
+            return False
+```
+```
+        while n!=1 and n!=4:
+            sum=0
+            while n>0:
+                r=n%10
+                sum=sum+r*r
+                n=n//10
+            n= sum
+        return n==1
+class Blockchain:
+    def __init__(self):
+        self.chain=[Block(1,0,time.time())]
+    def CBlock(self):
+        return self.chain[-1]
+    def addBlock(self,b):
+        if b.ishappy(b.n):
+            b.ph=self.CBlock().hash
+            b.hash=b.calch()
+            self.chain.append(b)
+            print(b.n,"block added")
+        else:
+            print(b.n,"Block not added")
+```
+testhappy.py
+```
+from happy import Block, Blockchain
+import time
+a=Blockchain()
+a.addBlock(Block(2,31,time.time()))
+a.addBlock(Block(2,32,time.time()))
+a.addBlock(Block(2,13,time.time()))
+print(a.chain)
+```
+Pract 13 perfect number hardhat dapp
+4. Create a Hardhat project
+Step 1: Open VS Code terminal or PowerShell.
+Create a project folder:
+mkdir PerfectDApp
+```
+cd PerfectDApp
+```
+Step 2: Initialize npm.
+npm init -y
+Step 3: Install Hardhat.
+npm install --save-dev hardhat
+Step 4: Initialize Hardhat.
+npx hardhat --init
+Select a TypeScript-based Hardhat project and install the required dependencies when prompted.
+Step 5: Install Ethers.js.
+npm install ethers
+Step 6: Install the frontend server.
+npm install --save-dev http-server
+5. Create the project structure
+Inside the project, create the following files and folders:
+PerfectDApp/
+│
+├── contracts/
+│ └── PerfectNumber.sol
+│
+├── ignition/
+│ └── modules/
+│ ├── PerfectNumber.ts
+│ │
+│ └── Frontend/
+│ ├── index.html
+│ └── main.js
+│
+├── hardhat.config.ts
+├── package.json
+└── package-lock.json
+The artifacts, cache, node_modules and ignition/deployments folders are generated or populated during execution.
+6. Create the Solidity Smart Contract
+Step 1: Open the contracts folder.
+Step 2: Create a file named:
+```
+PerfectNumber.sol
+```
+Step 3: Write the following Solidity code:
+
+```
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+contract PerfectNumber {
+    function checkPerfectNumber(uint256 n) public pure returns (bool) {
+        uint256 sum = 0;
+        for (uint256 i = 1; i <= n / 2; i++) {
+            if (n % i == 0) {
+                sum += i;
+            }
+        }
+        return n > 1 && sum == n;
+    }
+}
+```
+Explanation of the code:
+pragma solidity ^0.8.28 specifies the compatible Solidity compiler version.
+contract PerfectNumber defines the smart contract.
+checkPerfectNumber(uint256 n) accepts a positive integer.
+sum stores the sum of the proper divisors.
+The for loop checks numbers from 1 to n/2.
+n % i == 0 checks whether i divides n completely.
+If divisible, i is added to sum.
+Finally, sum == n checks whether the number is perfect.
+The function returns true for a perfect number and false otherwise.
+pure indicates that the function does not read or modify blockchain state.
+7. Compile the Smart Contract
+Open the terminal in the project root directory.
+Execute:
+npx hardhat compile
+Expected output:
+Generating typings...
+```
+Compiled 1 Solidity file successfully
+```
+The compiled contract is stored inside:
+artifacts/
+```
+    contracts/
+        PerfectNumber.sol/
+            PerfectNumber.json
+```
+This JSON file contains the ABI and compiled contract information.
+What is ABI?
+ABI stands for Application Binary Interface. It describes the functions and parameters of a smart contract so that frontend applications can communicate with it.
+8. Configure the Hardhat Network
+Open:
+```
+hardhat.config.ts
+```
+Your project uses Hardhat 3, so we need to configure a local HTTP network.
+Use the following configuration:
+
+```
+import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
+import { configVariable, defineConfig } from "hardhat/config";
+export default defineConfig({
+  plugins: [hardhatToolboxViemPlugin],
+  solidity: {
+    profiles: {
+      default: {
+        version: "0.8.34",
+      },
+      production: {
+        version: "0.8.34",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    },
+  },
+  networks: {
+    hardhatMainnet: {
+      type: "edr-simulated",
+      chainType: "l1",
+    },
+    hardhatOp: {
+      type: "edr-simulated",
+      chainType: "op",
+    },
+    localhost: {
+      type: "http",
+      chainType: "l1",
+      url: "http://127.0.0.1:8545",
+    },
+    sepolia: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("SEPOLIA_RPC_URL"),
+      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+  },
+});
+```
+Explanation:
+hardhatMainnet: Simulated Ethereum network.
+hardhatOp: Simulated Optimism network.
+localhost: Connects Hardhat to the local blockchain.
+sepolia: Configuration for the Sepolia test network.
+127.0.0.1:8545: Local blockchain RPC address.
+Chain ID of the local Hardhat node is 31337.
+Important: The localhost entry is necessary because we are deploying to an independently running local blockchain using the --network localhost command.
+9. Create the Ignition Deployment Module
+Open:
+```
+ignition/modules
+```
+Create a file:
+```
+PerfectNumber.ts
+```
+Write the following code:
+
+```
+import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+export default buildModule("PerfectNumberModule", (m) => {
+    const perfectNumber = m.contract("PerfectNumber");
+    return { perfectNumber };
+});
+```
+Explanation:
+buildModule() creates a Hardhat Ignition deployment module.
+m.contract("PerfectNumber") specifies the smart contract to deploy.
+return { perfectNumber } returns the deployed contract reference.
+Ignition automates the smart contract deployment process.
+10. Create the Frontend
+Inside ignition/modules, create a folder named:
+```
+Frontend
+```
+Inside this folder, create two files:
+index.html
+main.js
+A. index.html
+This file creates the user interface of the DApp.
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Perfect Number DApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #f0f2f5;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            margin: auto;
+            border-radius: 10px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+        }
+        button {
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Perfect Number DApp</h2>
+        <button onclick="connectWallet()">
+            Connect Wallet
+        </button>
+        <p id="wallet">Wallet not connected</p>
+        <input
+            type="number"
+            id="number"
+            placeholder="Enter a number"
+        >
+        <br>
+        <button onclick="checkNumber()">
+            Check Number
+        </button>
+        <p id="result"></p>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
+```
+Explanation:
+Creates the Perfect Number DApp interface.
+Provides a Connect Wallet button.
+Accepts a number from the user.
+Provides a Check Number button.
+Displays the result.
+Loads Ethers.js to communicate with the Ethereum blockchain.
+B. main.js
+This file connects the frontend to MetaMask and the deployed smart contract.
+
+```
+let contract;
+let signer;
+const contractAddress = "PASTE_DEPLOYED_CONTRACT_ADDRESS";
+const abi = [
+    "function checkPerfectNumber(uint256 n) public pure returns (bool)"
+];
+async function connectWallet() {
+    if (!window.ethereum) {
+        alert("Please install MetaMask!");
+        return;
+    }
+    try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = await provider.getSigner();
+        contract = new ethers.Contract(
+            contractAddress,
+            abi,
+            signer
+        );
+        document.getElementById("wallet").innerText =
+            "Connected: " + await signer.getAddress();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+async function checkNumber() {
+    try {
+        if (!contract) {
+            alert("Please connect your wallet first!");
+            return;
+        }
+        const n = document.getElementById("number").value;
+        if (
+            n === "" ||
+            !Number.isSafeInteger(Number(n)) ||
+            Number(n) < 1
+        ) {
+            alert("Enter a valid positive integer!");
+            return;
+        }
+        const result = await contract.checkPerfectNumber(n);
+        document.getElementById("result").innerText =
+            result
+                ? "It is a Perfect Number!"
+                : "It is NOT a Perfect Number!";
+    } catch (error) {
+        document.getElementById("result").innerText =
+            "Error: " + error.message;
+    }
+}
+```
+Explanation:
+contract stores the smart contract instance.
+signer represents the connected wallet.
+contractAddress stores the deployed contract address.
+abi defines the function interface.
+connectWallet() connects MetaMask to the frontend.
+BrowserProvider connects Ethers.js with MetaMask.
+getSigner() obtains the connected wallet account.
+ethers.Contract() creates the contract instance.
+checkNumber() accepts the user input.
+checkPerfectNumber(n) calls the Solidity function.
+The returned Boolean value is displayed on the webpage.
+Important: After deployment, replace PASTE_DEPLOYED_CONTRACT_ADDRESS with your actual contract address.
+11. Start the Local Hardhat Blockchain
+We now have to start our own local Ethereum blockchain.
+Step 1: Open VS Code Terminal 1.
+Make sure you are inside the project directory:
+cd C:\Users\Mansi\OneDrive\LYCS\Blockchain\Practs\PerfectDApp
+Step 2: Run:
+npx hardhat node
+Expected output:
+Started HTTP and WebSocket JSON-RPC server
+```
+http://127.0.0.1:8545
+Accounts
+========
+Account #0: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Private Key: 0x...
+```
+The terminal displays multiple test accounts and their private keys.
+Important:
+Keep Terminal 1 running.
+Do not close it while executing the DApp.
+These accounts are for local testing only.
+12. Deploy the Smart Contract
+Step 1: Open VS Code Terminal 2.
+Navigate to the project folder:
+cd C:\Users\Mansi\OneDrive\LYCS\Blockchain\Practs\PerfectDApp
+Step 2: Execute the deployment command:
+npx hardhat ignition deploy ignition/modules/PerfectNumber.ts --network localhost
+Expected output:
+Deploying [ PerfectNumberModule ]
+```
+Batch #1
+Executed PerfectNumberModule#PerfectNumber
+Successfully deployed
+Deployed Addresses
+PerfectNumberModule#PerfectNumber -
+0x5FbDB2315678afecb367f032d93f642f64180aa3
+```
+The address above is an example from the local Hardhat deployment.
+Step 3: Copy the deployed contract address.
+This address is required to connect the frontend to the smart contract.
+13. Update the Contract Address in main.js
+Open:
+```
+ignition/modules/Frontend/main.js
+```
+Find:
+const contractAddress = "PASTE_DEPLOYED_CONTRACT_ADDRESS";
+Replace it with the address generated during deployment.
+For example:
+const contractAddress = "0x5FbDB2315678afecb367f032d93f642f64180aa3";
+Save the file using Ctrl + S.
+Important: Use the exact address printed by your deployment command.
+14. Configure MetaMask
+MetaMask is a browser wallet used to connect the frontend to the blockchain.
+Step 1: Open the MetaMask extension.
+Step 2: Add a custom network or edit your existing local network.
+Enter the following details:
+Hardhat Local Network
+Field	Value
+Network Name	Hardhat Local
+---	---
+RPC URL	`http://127.0.0.1:8545`
+---	---
+Chain ID	`31337`
+---	---
+Currency Symbol	ETH
+---	---
+Step 3: Save the network and select Hardhat Local.
+Step 4: Import a Hardhat test account.
+Go to Terminal 1.
+Copy the private key of Account #0.
+Open MetaMask.
+Select Import Account.
+Paste the private key.
+Import the account.
+The account should now display test ETH.
+Security note
+Never use Hardhat test private keys on real networks or with real funds.
+15. Run the Frontend
+Step 1: Open VS Code Terminal 3.
+Navigate to the project directory:
+cd C:\Users\Mansi\OneDrive\LYCS\Blockchain\Practs\PerfectDApp
+Step 2: Run the frontend server:
+npx http-server ignition/modules/Frontend -p 5500
+Expected output:
+Available on:
+```
+http://127.0.0.1:5500
+```
+Step 3: Open Google Chrome.
+Visit:
+http://127.0.0.1:5500
+Your Perfect Number DApp webpage will appear.
+Troubleshooting:
+1. Start blockchain:
+npx hardhat node
+2. Deploy again with Ignition reset (only when needed):
+npx hardhat ignition deploy ignition/modules/PerfectNumber.ts --network localhost --reset
+3. Verify network Chain ID in Chrome Console:
+await window.ethereum.request({
+```
+    method: "eth_chainId"
+});
+```
+Expected output:
+0x7a69
+This is hexadecimal representation of 31337.
+4. Verify deployed contract code:
+const provider = new ethers.BrowserProvider(window.ethereum);
+```
+const code = await provider.getCode(
+    "YOUR_CONTRACT_ADDRESS"
+);
+console.log("Contract Code:", code);
+console.log("Code Length:", code.length);
+```
+The contract code should be non-empty (0x alone means no contract exists at that address).
+5. If MetaMask does not switch networks automatically:
+await window.ethereum.request({
+```
+    method: "wallet_switchEthereumChain",
+    params: [{ chainId: "0x7a69" }]
+});
+```
+
+Pract 7 :Addition DApp
+2. Create a Hardhat Project
+Open the VS Code terminal and execute:
+Create a project folder:  
+mkdir AdditionDApp
+Navigate into the folder:  
+cd AdditionDApp
+Initialize npm:  
+npm init -y
+Install Hardhat:  
+npm install --save-dev hardhat
+Initialize Hardhat:  
+npx hardhat --init
+Select a TypeScript Hardhat project.
+Accept the ESM configuration if prompted.
+Install ethers.js:  
+npm install ethers
+Install HTTP server:  
+npm install --save-dev http-server
+3. Create the Smart Contract
+Inside the contracts folder, create a file named Addition.sol.
+Write the following Solidity code:
+// SPDX-License-Identifier: MIT
+```
+pragma solidity ^0.8.28;
+contract Addition {
+    function add(uint a, uint b) public pure returns(uint) {
+        return a + b;
+    }
+}
+```
+Explanation:
+pragma solidity: Specifies the Solidity compiler version.
+contract Addition: Creates a smart contract named Addition.
+uint a, uint b: Accepts two unsigned integer numbers.
+public: Allows the function to be called externally.
+pure: Indicates that the function does not read or modify blockchain state.
+returns(uint): Returns the addition result.
+4. Create the Deployment Module
+Inside ignition/modules, create a file named Addition.ts.
+Write the following code:
+import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+```
+const AdditionModule = buildModule("AdditionModule", (m) => {
+    const addition = m.contract("Addition");
+    return { addition };
+});
+export default AdditionModule;
+```
+Explanation:
+buildModule: Creates a Hardhat Ignition deployment module.
+m.contract("Addition"): Deploys the Addition smart contract.
+return: Returns the deployed contract instance.
+export default: Exports the module for deployment.
+5. Compile the Smart Contract
+Execute the following command:
+```
+npx hardhat compile
+```
+The Solidity contract is compiled successfully, and the compiled files are generated inside the artifacts folder.
+6. Start the Local Blockchain
+Open a new terminal (Terminal 1) and execute:
+```
+npx hardhat node
+```
+A local blockchain starts at:
+RPC URL: http://127.0.0.1:8545
+Chain ID: 31337
+Hardhat also displays test accounts and their private keys.
+Keep this terminal running.
+7. Deploy the Smart Contract
+Open another terminal (Terminal 2) in the project folder.
+Execute:
+```
+npx hardhat ignition deploy ignition/modules/Addition.ts --network localhost
+```
+After successful deployment, Hardhat displays the deployed contract address.
+Copy this address because it is required in the frontend JavaScript file.
+8. Create the Frontend
+Inside the project, create a folder named Frontend inside ignition/modules.
+Create two files:
+index.html
+main.js
+File 1: index.html
+Write the following HTML code:
+<!DOCTYPE html>
+```
+<html>
+<head>
+    <title>Addition DApp</title>
+</head>
+<body>
+    <h2>Addition of Two Numbers</h2>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <br><br>
+    <input type="number" id="num1" placeholder="Enter first number">
+    <input type="number" id="num2" placeholder="Enter second number">
+    <br><br>
+    <button onclick="addition()">Add Numbers</button>
+    <h3 id="result"></h3>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
+```
+Explanation:
+HTML creates the user interface.
+First button connects the MetaMask wallet.
+Two input fields accept numbers.
+Add Numbers button calls the smart contract function.
+Result heading displays the addition result.
+Ethers.js connects the frontend with the Ethereum blockchain.
+File 2: main.js
+Write the following JavaScript code:
+const contractAddress = "PASTE_YOUR_CONTRACT_ADDRESS";
+```
+const abi = [
+    "function add(uint256 a, uint256 b) public pure returns(uint256)"
+];
+let contract;
+async function connectWallet() {
+    await window.ethereum.request({
+        method: "eth_requestAccounts"
+    });
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    contract = new ethers.Contract(
+        contractAddress,
+        abi,
+        signer
+    );
+    alert("Wallet Connected!");
+}
+async function addition() {
+    const a = document.getElementById("num1").value;
+    const b = document.getElementById("num2").value;
+    if (a === "" || b === "") {
+        alert("Enter both numbers");
+        return;
+    }
+    const result = await contract.add(a, b);
+    document.getElementById("result").innerHTML =
+        "Addition = " + result.toString();
+}
+```
+Explanation:
+contractAddress: Stores the deployed smart contract address.
+ABI: Defines the smart contract function available to the frontend.
+connectWallet(): Connects MetaMask to the DApp.
+BrowserProvider: Connects the application to the blockchain through MetaMask.
+getSigner(): Gets the connected wallet account.
+ethers.Contract(): Creates a connection with the deployed smart contract.
+addition(): Reads the two input values and calls the add() function.
+innerHTML: Displays the result on the webpage.
+Important: Replace PASTE_YOUR_CONTRACT_ADDRESS with the actual contract address obtained during deployment. Keep the double quotation marks.
+9. Configure MetaMask
+Open the MetaMask browser extension.
+Add a custom network with the following details:
+Setting	Value
+Network Name	Hardhat Local
+---	---
+RPC URL	`http://127.0.0.1:8545`
+---	---
+Chain ID	`31337`
+---	---
+Currency Symbol	ETH
+---	---
+After adding the network:
+Select Hardhat Local.
+Import one of the test accounts displayed in the Hardhat terminal.
+Use its private key.
+Connect the wallet to the DApp.
+Note: Hardhat test accounts and private keys are for local development only.
+10. Run the Frontend
+Open Terminal 3 in the project folder.
+Execute:
+```
+npx http-server ignition/modules/Frontend -p 5501
+```
+If port 5500 is already occupied, use another available port such as 5501.
+Open the following URL in the browser:
+```
+http://127.0.0.1:5501
+```
+11. Execute the DApp
+Follow these steps:
+Open the DApp in the browser.
+Click Connect MetaMask.
+Approve the wallet connection.
+Enter the first number, for example, 10.
+Enter the second number, for example, 20.
+Click Add Numbers.
+The result is displayed on the webpage.
+Expected Output:
+Addition of Two Numbers
+First Number: 10
+Second Number: 20
+Addition Result: 30
+12. Important Commands
+Operation	Command
+Initialize project	`npm init -y`
+---	---
+Install Hardhat	`npm install --save-dev hardhat`
+---	---
+Initialize Hardhat	`npx hardhat --init`
+---	---
+Compile contract	`npx hardhat compile`
+---	---
+Start blockchain	`npx hardhat node`
+---	---
+Deploy contract	`npx hardhat ignition deploy ignition/modules/Addition.ts --network localhost`
+---	---
+Start frontend	`npx http-server ignition/modules/Frontend -p 5501`
+---	---
+Pract 8: PrimeDApp
+Create a Hardhat Project
+Open VS Code terminal and execute:
+Create project folder:  
+mkdir PrimeDApp
+Navigate into the folder:  
+cd PrimeDApp
+Initialize npm:  
+npm init -y
+Install Hardhat:  
+npm install --save-dev hardhat
+Initialize Hardhat:  
+npx hardhat --init
+Select a TypeScript Hardhat project and accept ESM configuration if prompted.
+Install ethers.js:  
+npm install ethers
+Install HTTP server:  
+npm install --save-dev http-server
+3. Create the Smart Contract
+Inside the contracts folder, create a file named Prime.sol.
+Write the following Solidity code:
+// SPDX-License-Identifier: MIT
+```
+pragma solidity ^0.8.28;
+contract Prime {
+    function isPrime(uint n) public pure returns(bool) {
+        if (n < 2) {
+            return false;
+        }
+        for (uint i = 2; i <= n / i; i++) {
+            if (n % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+```
+Explanation:
+contract Prime: Creates a smart contract named Prime.
+isPrime(uint n): Accepts one unsigned integer.
+public: Allows the function to be called externally.
+pure: Does not read or modify blockchain state.
+n < 2: Numbers less than 2 are not prime.
+for loop: Checks whether the number is divisible by any number starting from 2.
+n % i == 0: Checks whether the number is completely divisible by i.
+return false: The number is not prime.
+return true: The number is prime.
+A prime number is a number greater than 1 that is divisible only by 1 and itself.
+4. Create the Deployment Module
+Inside ignition/modules, create a file named Prime.ts.
+Write the following code:
+import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+```
+const PrimeModule = buildModule("PrimeModule", (m) => {
+    const prime = m.contract("Prime");
+    return { prime };
+});
+export default PrimeModule;
+```
+Explanation:
+buildModule: Creates a deployment module.
+m.contract("Prime"): Deploys the Prime smart contract.
+return: Returns the deployed contract.
+export default: Exports the module.
+5. Compile the Smart Contract
+Execute:
+```
+npx hardhat compile
+```
+The Solidity contract will be compiled successfully.
+6. Start the Local Blockchain
+Open Terminal 1 and execute:
+```
+npx hardhat node
+```
+The local blockchain starts with:
+RPC URL: http://127.0.0.1:8545
+Chain ID: 31337
+Keep this terminal running.
+7. Deploy the Smart Contract
+Open Terminal 2 in the project folder.
+Execute:
+```
+npx hardhat ignition deploy ignition/modules/Prime.ts --network localhost
+```
+After successful deployment, Hardhat displays the deployed contract address.
+Copy the contract address for frontend integration.
+8. Create the Frontend
+Inside ignition/modules, create a folder named Frontend.
+Create two files:
+index.html
+main.js
+File 1: index.html
+Write the following HTML code:
+<!DOCTYPE html>
+```
+<html>
+<head>
+    <title>Prime Number DApp</title>
+</head>
+<body>
+    <h2>Prime Number Checker</h2>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <br><br>
+    <input type="number" id="num" placeholder="Enter a number">
+    <br><br>
+    <button onclick="checkPrime()">Check Prime</button>
+    <h3 id="result"></h3>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
+```
+Explanation:
+HTML creates the user interface.
+Connect MetaMask button connects the wallet.
+Input field accepts a number.
+Check Prime button calls the smart contract function.
+Result heading displays whether the number is prime or not.
+Ethers.js connects the frontend with the blockchain.
+File 2: main.js
+Write the following JavaScript code:
+const contractAddress = "PASTE_YOUR_CONTRACT_ADDRESS";
+```
+const abi = [
+    "function isPrime(uint256 n) public pure returns(bool)"
+];
+let contract;
+async function connectWallet() {
+    await window.ethereum.request({
+        method: "eth_requestAccounts"
+    });
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    contract = new ethers.Contract(
+        contractAddress,
+        abi,
+        signer
+    );
+    alert("Wallet Connected!");
+}
+async function checkPrime() {
+    const n = document.getElementById("num").value;
+    if (n === "") {
+        alert("Enter a number");
+        return;
+    }
+    const result = await contract.isPrime(n);
+    if (result) {
+        document.getElementById("result").innerHTML =
+            n + " is a Prime Number";
+    }
+    else {
+        document.getElementById("result").innerHTML =
+            n + " is Not a Prime Number";
+    }
+}
+```
+Explanation:
+contractAddress: Stores the deployed smart contract address.
+ABI: Defines the smart contract function.
+connectWallet(): Connects MetaMask to the DApp.
+BrowserProvider: Connects the application to the blockchain.
+getSigner(): Gets the connected wallet account.
+ethers.Contract(): Connects the frontend with the deployed contract.
+checkPrime(): Takes the number entered by the user.
+contract.isPrime(n): Calls the Solidity function.
+if (result): Displays Prime Number if the result is true.
+else: Displays Not a Prime Number if the result is false.
+Important: Replace PASTE_YOUR_CONTRACT_ADDRESS with the actual address obtained during deployment. Keep the double quotation marks.
+9. Configure MetaMask
+Open the MetaMask browser extension and add a custom network.
+Setting	Value
+Network Name	Hardhat Local
+---	---
+RPC URL	`http://127.0.0.1:8545`
+---	---
+Chain ID	`31337`
+---	---
+Currency Symbol	ETH
+---	---
+After adding the network:
+Select Hardhat Local.
+Import one test account displayed in Terminal 1 using its private key.
+Connect MetaMask to the DApp.
+Use only Hardhat test accounts for local development.
+10. Run the Frontend
+Open Terminal 3 in the project folder.
+Execute:
+```
+npx http-server ignition/modules/Frontend -p 5501
+```
+If port 5500 is already occupied, use port 5501 or another available port.
+Open the browser and enter:
+```
+http://127.0.0.1:5501
+```
+Pract 9 VotingDApp
+Step 1: Create Hardhat project
+mkdir VotingDApp
+```
+cd VotingDApp
+npm init -y
+npm install --save-dev hardhat
+npx hardhat --init
+```
+Select a JavaScript project. If asked to enable ESM, enter Y.
+npm install --save-dev @nomicfoundation/hardhat-toolbox
+Step 2: Create smart contract
+Create contracts/Voting.sol.
+// SPDX-License-Identifier: MIT
+```
+pragma solidity ^0.8.28;
+contract Voting {
+    string[] public candidates;
+    mapping(string => uint) public votes;
+    mapping(address => bool) public hasVoted;
+    constructor() {
+        candidates.push("Alice");
+        candidates.push("Bob");
+        candidates.push("Charlie");
+    }
+    function vote(string memory candidate) public {
+        require(!hasVoted[msg.sender], "Already voted");
+        bool found = false;
+        for (uint i = 0; i < candidates.length; i++) {
+            if (keccak256(bytes(candidates[i])) == keccak256(bytes(candidate))) {
+                found = true;
+            }
+        }
+        require(found, "Invalid candidate");
+        votes[candidate]++;
+        hasVoted[msg.sender] = true;
+    }
+    function getVotes(string memory candidate) public view returns (uint) {
+        return votes[candidate];
+    }
+    function getCandidates() public view returns (string[] memory) {
+        return candidates;
+    }
+}
+```
+Step 3: Compile contract
+npx hardhat compile
+Step 4: Create deployment file
+Create ignition/modules/Voting.js.
+import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+```
+export default buildModule("VotingModule", (m) => {
+    const voting = m.contract("Voting");
+    return { voting };
+});
+```
+Step 5: Create frontend folder
+mkdir frontend
+```
+New-Item frontend\index.html -ItemType File
+New-Item frontend\script.js -ItemType File
+```
+Step 6: Write index.html
+Open:
+code frontend\index.html
+Paste:
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting DApp</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0f2f5;
+            text-align: center;
+            padding: 30px;
+        }
+        .container {
+            background: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .candidate {
+            background: #eee;
+            padding: 15px;
+            margin: 12px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Online Voting DApp</h1>
+    <p>Vote for your favourite candidate</p>
+    <button onclick="connectWallet()">Connect MetaMask</button>
+    <p id="account">Wallet not connected</p>
+    <hr>
+    <h2>Available Candidates</h2>
+    <div id="candidates">Loading candidates...</div>
+    <button onclick="loadCandidates()">Refresh Votes</button>
+    <p id="status"></p>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
+```
+Step 7: Write script.js
+Open:
+code frontend\script.js
+Paste:
+
+```
+let provider;
+let signer;
+let contract;
+const contractAddress = "PASTE_CONTRACT_ADDRESS_HERE";
+async function connectWallet() {
+    if (!window.ethereum) {
+        alert("Please install MetaMask!");
+        return;
+    }
+    try {
+        provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        signer = await provider.getSigner();
+        const address = await signer.getAddress();
+        document.getElementById("account").innerText =
+            "Connected: " + address;
+        const response = await fetch("abi.json");
+        const artifact = await response.json();
+        contract = new ethers.Contract(
+            contractAddress,
+            artifact.abi,
+            signer
+        );
+        document.getElementById("status").innerText =
+            "Wallet connected successfully!";
+        loadCandidates();
+    } catch (error) {
+        document.getElementById("status").innerText =
+            error.message;
+    }
+}
+async function loadCandidates() {
+    if (!contract) return;
+    try {
+        const candidates = await contract.getCandidates();
+        const container = document.getElementById("candidates");
+        container.innerHTML = "";
+        for (let candidate of candidates) {
+            const voteCount = await contract.getVotes(candidate);
+            const div = document.createElement("div");
+            div.className = "candidate";
+            const heading = document.createElement("h3");
+            heading.innerText = candidate;
+            const votes = document.createElement("p");
+            votes.innerText = "Votes: " + voteCount.toString();
+            const button = document.createElement("button");
+            button.innerText = "Vote";
+            button.onclick = function () {
+                castVote(candidate);
+            };
+            div.appendChild(heading);
+            div.appendChild(votes);
+            div.appendChild(button);
+            container.appendChild(div);
+        }
+    } catch (error) {
+        document.getElementById("status").innerText =
+            error.message;
+    }
+}
+async function castVote(candidate) {
+    try {
+        const transaction = await contract.vote(candidate);
+        document.getElementById("status").innerText =
+            "Waiting for confirmation...";
+        await transaction.wait();
+        document.getElementById("status").innerText =
+            "Vote successfully submitted for " + candidate;
+        loadCandidates();
+    } catch (error) {
+        document.getElementById("status").innerText =
+            error.reason || error.shortMessage || error.message;
+    }
+}
+```
+Step 8: Copy ABI file
+Copy-Item artifacts\contracts\Voting.sol\Voting.json frontend\abi.json
+Step 9: Start Hardhat blockchain
+Terminal 1:
+npx hardhat node
+Keep running.
+Step 10: Deploy smart contract
+Terminal 2:
+npx hardhat ignition deploy ignition/modules/Voting.js --network localhost
+Copy the deployed contract address.
+Step 11: Add contract address
+Open:
+code frontend\script.js
+Replace:
+const contractAddress = "PASTE_CONTRACT_ADDRESS_HERE";
+With your actual deployed address:
+const contractAddress = "YOUR_DEPLOYED_ADDRESS";
+Save the file.
+Step 12: Configure MetaMask
+Add network:
+Field	Value
+Network Name	Hardhat Local
+---	---
+RPC URL	http://127.0.0.1:8545
+---	---
+Chain ID	31337
+---	---
+Currency	ETH
+---	---
+Import Account #0 using its private key from Terminal 1.
+Step 13: Run frontend
+Install Live Server extension in VS Code.
+Open frontend/index.html.
+Right-click.
+Select Open with Live Server.
+URL:
+http://127.0.0.1:5500/frontend/
+Step 14: Execute voting
+Click Connect MetaMask.
+Approve wallet connection.
+Select Alice and click Vote.
+Confirm transaction.
+Check Alice's vote count.
+Try voting again from the same account.
+Verify Already voted error.
+Switch MetaMask account.
+Vote for Bob.
+Click Refresh Votes.
+Step 15: Final project structure
+VotingDApp/
+│
+├── contracts/
+│ └── Voting.sol
+│
+├── ignition/
+│ └── modules/
+│ └── Voting.js
+│
+├── frontend/
+│ ├── index.html
+│ ├── script.js
+│ └── abi.json
+│
+├── artifacts/
+├── cache/
+├── node_modules/
+├── hardhat.config.js
+└── package.json
+
